@@ -23,3 +23,11 @@ $ yarn run start:dev
 # production mode
 $ yarn run start:prod
 ```
+
+## Features
+
+- [x] Environment Variable Management
+- [ ] Swagger/OpenAPI Integration
+- [ ] ORM Support
+- [ ] Database Migration Tools Integration
+- [ ] Dockerize Project
