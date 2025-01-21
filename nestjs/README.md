@@ -28,6 +28,6 @@ $ yarn run start:prod
 
 - [x] Environment Variable Management
 - [x] Swagger/OpenAPI Integration
-- [ ] ORM Support
+- [x] ORM Support
 - [ ] Database Migration Tools Integration
 - [ ] Dockerize Project
