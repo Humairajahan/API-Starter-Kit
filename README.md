@@ -11,7 +11,7 @@ This repository provides starter templates for building RESTful APIs using popul
 ## 📂 Repository Structure
 
 ```bash
-API-STarter-Kit/
+API-Starter-Kit/
 ├── nestjs/
 ├── fastapi/
 ├── drf/
@@ -19,8 +19,33 @@ API-STarter-Kit/
 
 ## Fetures
 
-- [ ] Environment Variable Management
-- [ ] Swagger/OpenAPI Integration
-- [ ] ORM Support
-- [ ] Database Migration Tools Integration
-- [ ] Dockerize Project
+### Core Functionalities
+
+- Environment Variable Management
+- API Documentation Integration (e.g., Swagger/OpenAPI)
+- ORM Support (SQLAlchemy, Django ORM, TypeORM)
+- Database Migration Tools (Alembic, Django Migrations, TypeORM CLI)
+- Database Seeding (initial roles, users)
+
+### Authentication & Authorizations
+
+- Authentication with JWT, refresh token and OAuth
+- Role-Based Access Control (RBAC) with Predefined Roles
+- Custom Authorization Middleware or Guards
+- Input Validation and Sanitization
+
+### Email Services
+
+- Email delivery for account verification and password resets
+
+### Developer Experience
+
+- Dockerize Project
+- Modular Architecture for Scalability and Reusability
+- Predefined Error Handling with Custom Exception Filters
+- Code Quality and Linting Integration (e.g., ESLint, Flake8, Pylint)
+
+### Performance & Optimization
+
+- Pagination Support
+- Rate Limiting for API Requests
