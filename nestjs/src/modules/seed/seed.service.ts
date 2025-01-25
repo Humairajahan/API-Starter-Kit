@@ -5,11 +5,13 @@ import { Role } from '../role/entities/role.entity';
 import { User } from '../user/entities/user.entity';
 import { PredefinedUserRoles } from '../role/data/predefined-roles.enum';
 import { ConfigService } from '@nestjs/config';
+import { CustomJwtService } from '../auth/service/custom-jwt.service';
 
 @Injectable()
 export class SeedService implements OnApplicationBootstrap {
   constructor(
     private readonly configService: ConfigService,
+    private readonly customJwtService: CustomJwtService,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
     @InjectRepository(User)
@@ -73,9 +75,8 @@ export class SeedService implements OnApplicationBootstrap {
       superAdminUser.username = 'superadmin';
       superAdminUser.name = 'Admin';
       superAdminUser.email = superAdminEmail;
-      superAdminUser.password = this.configService.get<string>(
-        'SUPERADMIN_PASSWORD',
-        '123456',
+      superAdminUser.password = await this.customJwtService.encodePassword(
+        this.configService.get<string>('SUPERADMIN_PASSWORD', '123456'),
       );
       superAdminUser.role = superAdminRole;
 
