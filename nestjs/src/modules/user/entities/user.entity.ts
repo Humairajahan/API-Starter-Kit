@@ -1,5 +1,6 @@
 import { CustomBaseEntity } from 'src/common/entities/custom-base.entity';
-import { Column, Entity } from 'typeorm';
+import { Role } from 'src/modules/role/entities/role.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity('user')
 export class User extends CustomBaseEntity {
@@ -17,4 +18,8 @@ export class User extends CustomBaseEntity {
 
   @Column({ type: 'varchar', nullable: true })
   avatarURL: string;
+
+  @ManyToOne(() => Role, (role) => role.users, { eager: true })
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 }

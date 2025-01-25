@@ -26,8 +26,27 @@ $ yarn run start:prod
 
 ## Features
 
+### Core Functionalities
+
 - [x] Environment Variable Management
 - [x] Swagger/OpenAPI Integration
 - [x] ORM Support
 - [ ] Database Migration Tools Integration
+- [x] Database Seeding
+
+### Authentication & Authorizations
+
+- [ ] Authentication with JWT, refresh token and OAuth
+- [ ] Custom Authorization Middleware or Guards
+- [ ] Role-Based Access Control (RBAC) with Predefined Roles
+
+### Developer Experience
+
+- [ ] Request Lifecycle Enhancements with Custom Exception Filters and Pipes
+- [ ] Custom Decorators for Enhanced Reusability (e.g., Permissions, Verification)
 - [ ] Dockerize Project
+
+### Performance & Optimization
+
+- [ ] Pagination Support
+- [ ] Rate Limiting for API Requests
