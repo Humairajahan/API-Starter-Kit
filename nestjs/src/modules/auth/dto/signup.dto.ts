@@ -30,4 +30,9 @@ export class SignupDto {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  confirmPassword: string;
 }

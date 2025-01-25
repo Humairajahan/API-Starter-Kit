@@ -6,10 +6,11 @@ import { User } from '../user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from 'src/config/jwt.config';
 import { CustomJwtService } from './service/custom-jwt.service';
+import { Role } from '../role/entities/role.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
     JwtModule.registerAsync(jwtConfig),
   ],
   controllers: [AuthController],
