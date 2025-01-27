@@ -8,9 +8,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CustomJwtService } from './custom-jwt.service';
-import { UnifiedAuthResponseDto } from '../dto/unifiedAuthResponse.dto';
+import {
+  LoggedInUserDto,
+  UnifiedAuthResponseDto,
+} from '../dto/unifiedAuthResponse.dto';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { PredefinedUserRoles } from 'src/modules/role/data/predefined-roles.enum';
+import { Response } from 'express';
+import { cookieConfig } from 'src/config/cookie.config';
 
 @Injectable()
 export class AuthService {
@@ -26,12 +31,11 @@ export class AuthService {
    *
    * GENERATES AN UNIFIED AUTHENTICATION RESPONSE
    *
-   * @param user
-   * @param accessToken
-   * @returns
+   * @param user - User entity
+   * @returns LoggedInUserDto
    *
    */
-  unifiedAuthResponse(user: User): UnifiedAuthResponseDto {
+  unifiedAuthResponse(user: User): LoggedInUserDto {
     return {
       id: user.id,
       uuid: user.uuid,
@@ -43,6 +47,19 @@ export class AuthService {
       userRole: user.role.role,
       userRoleUUID: user.role.uuid,
     };
+  }
+
+  /**
+   *
+   * SET A COOKIE IN THE HTTP RESPONSE
+   *
+   * @param res - The HTTP response object
+   * @param cookieName - The name of the cookie to be set
+   * @param cookieValue - The value to be assigned to the cookie
+   *
+   */
+  setCookie(res: Response, cookieName: string, cookieValue: string) {
+    res.cookie(cookieName, cookieValue, cookieConfig);
   }
 
   /**
@@ -110,8 +127,50 @@ export class AuthService {
    */
   async generateVerificationCode() {}
 
-  login(loginDto: LoginDto) {
-    return 'This action logs in a user with valid credentials.';
+  /**
+   *
+   * LOGIN
+   *
+   * @param loginDto - User login credentials.
+   * @returns UnifiedAuthResponseDto with user details
+   *
+   */
+  async login(loginDto: LoginDto): Promise<UnifiedAuthResponseDto> {
+    // EDGE CASE: USER WITH THIS EMAIL DOES NOT EXIST
+    const userExists = await this.userRepository.findOneBy({
+      email: loginDto.email,
+    });
+
+    if (!userExists) {
+      throw new HttpException(
+        'User with this email does not exist',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // PASSWORD VALIDATION
+    const passwordValid: boolean = this.customJwtService.validatePassword(
+      loginDto.password,
+      userExists.password,
+    );
+
+    if (!passwordValid) {
+      throw new HttpException(
+        'Invalid user credentials',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const accessToken =
+      await this.customJwtService.generateJwtToken(userExists);
+    const refreshToken =
+      await this.customJwtService.generateRefreshToken(userExists);
+
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      data: this.unifiedAuthResponse(userExists),
+    };
   }
 
   verifyAccount(uuid: string, verifyAccountDto: VerifyAccountDto) {

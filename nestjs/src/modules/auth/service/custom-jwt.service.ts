@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { genSalt, hashSync } from 'bcrypt';
+import { compareSync, genSalt, hashSync } from 'bcrypt';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
 
@@ -26,6 +26,19 @@ export class CustomJwtService {
   async encodePassword(password: string): Promise<string> {
     const salt: string = await genSalt(10);
     return hashSync(password, salt);
+  }
+
+  /**
+   *
+   * VALIDATES THE STORED HASHED PASSWORD WITH THE USER PASSWORD
+   *
+   * @param password -The stored hashed password
+   * @param userPassword - The plain text password provided by the user during login
+   * @returns `true` if the passwords match, otherwise `false`
+   *
+   */
+  validatePassword(password: string, userPassword: string): boolean {
+    return compareSync(password, userPassword);
   }
 
   /**
