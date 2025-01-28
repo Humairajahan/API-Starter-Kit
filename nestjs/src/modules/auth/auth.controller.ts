@@ -23,8 +23,21 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  async signup(@Body() singupDto: SignupDto) {
-    return await this.authService.signup(singupDto);
+  async signup(@Body() singupDto: SignupDto, @Res() res: Response) {
+    const signupResponse: UnifiedAuthResponseDto =
+      await this.authService.signup(singupDto);
+
+    this.authService.cookieManager(
+      res,
+      signupResponse.accessToken,
+      signupResponse.refreshToken,
+    );
+
+    return res.status(HttpStatus.CREATED).json({
+      message: 'Signup successful',
+      status: HttpStatus.CREATED,
+      result: signupResponse.data,
+    });
   }
 
   @Post('login')
@@ -32,10 +45,9 @@ export class AuthController {
     const loginResponse: UnifiedAuthResponseDto =
       await this.authService.login(loginDto);
 
-    this.authService.setCookie(res, 'ACCESS_TOKEN', loginResponse.accessToken);
-    this.authService.setCookie(
+    this.authService.cookieManager(
       res,
-      'REFRESH_TOKEN',
+      loginResponse.accessToken,
       loginResponse.refreshToken,
     );
 

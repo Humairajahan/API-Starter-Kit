@@ -51,15 +51,20 @@ export class AuthService {
 
   /**
    *
-   * SET A COOKIE IN THE HTTP RESPONSE
+   * MANAGE COOKIES IN THE HTTP RESPONSE
    *
    * @param res - The HTTP response object
-   * @param cookieName - The name of the cookie to be set
-   * @param cookieValue - The value to be assigned to the cookie
+   * @param accessToken - The value for the `ACCESS_TOKEN` cookie
+   * @param refreshToken - The value for the `REFRESH_TOKEN` cookie
    *
    */
-  setCookie(res: Response, cookieName: string, cookieValue: string) {
-    res.cookie(cookieName, cookieValue, cookieConfig);
+  cookieManager(res: Response, accessToken: string, refreshToken: string) {
+    ['ACCESS_TOKEN', 'REFRESH_TOKEN'].forEach((cookie) =>
+      res.clearCookie(cookie),
+    );
+
+    res.cookie('ACCESS_TOKEN', accessToken, cookieConfig);
+    res.cookie('REFRESH_TOKEN', refreshToken, cookieConfig);
   }
 
   /**
@@ -69,7 +74,7 @@ export class AuthService {
    * @param signupDto
    * @returns
    */
-  async signup(signupDto: SignupDto) {
+  async signup(signupDto: SignupDto): Promise<UnifiedAuthResponseDto> {
     // EDGE CASE: PASSWORDS DO NOT MATCH
     if (signupDto.password != signupDto.confirmPassword) {
       throw new HttpException('Password mismatched', HttpStatus.BAD_REQUEST);
@@ -113,10 +118,15 @@ export class AuthService {
     user.password = hashedPassword;
     user.role = role;
     await this.userRepository.save(user);
+
+    // GENERATE ACCESS TOKEN AND REFRESH TOKEN
+    const accessToken = await this.customJwtService.generateJwtToken(user);
+    const refreshToken = await this.customJwtService.generateRefreshToken(user);
+
     return {
-      message: 'Signup succeessful',
-      status: HttpStatus.CREATED,
-      result: this.unifiedAuthResponse(user),
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+      data: this.unifiedAuthResponse(user),
     };
   }
 
