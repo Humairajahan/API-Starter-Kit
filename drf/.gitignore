@@ -1,6 +1,9 @@
 # VIRUTAL ENVIRONMENT
 drf_venv
 
+# ENVIRONMENT
+.env
+
 # PYTHON BYTECODE CACHE DIRECTORY
 __pycache__/
 

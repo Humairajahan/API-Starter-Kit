@@ -21,7 +21,7 @@ $ python manage.py runserver
 
 ### Core Functionalities
 
-- [ ] Environment Variable Management
+- [x] Environment Variable Management
 - [ ] Swagger/OpenAPI Integration
 - [ ] ORM Support
 - [ ] Database Migration Tools Integration
