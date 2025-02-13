@@ -1,0 +1,8 @@
+# VIRUTAL ENVIRONMENT
+drf_venv
+
+# PYTHON BYTECODE CACHE DIRECTORY
+__pycache__/
+
+# DATABASE
+db.sqlite3
